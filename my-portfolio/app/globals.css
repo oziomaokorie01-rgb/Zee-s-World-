@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  }
+
+  body {
+    color: rgb(var(--foreground-rgb));
+     
+        background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
+            font-family: "Times New Roman", Times, serif;
+              min-height: 100vh;
+              }
