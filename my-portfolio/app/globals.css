@@ -3,13 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  }
+    --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+        --text-lavender: #e0d7ff; /* Clear, readable, and thematic */
+        }
 
-  body {
-    color: rgb(var(--foreground-rgb));
-     
-        background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
+        body {
+          background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
             font-family: "Times New Roman", Times, serif;
-              min-height: 100vh;
+              color: var(--text-lavender);
               }
+             
