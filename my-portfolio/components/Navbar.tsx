@@ -15,12 +15,12 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center backdrop-blur-md bg-black/10 border-b border-white/5">
-      {/* Brand Logo */}
+      
       <Link href="/" className="text-2xl font-bold italic text-white tracking-tighter">
-        Z.W
-      </Link>
+      src= "https://peach-elderly-meadowlark-381.mypinata.cloud/ipfs/bafybeiapgfhhx2p57c3h2362uu5iihg7ypz3a7tsy5iimzsur2nmukbrha/the-site-is-zee-s-world-it-s-my-portfolio-i-was-th%20(1).png" alt="Zee's World logo"
+     className = "w-full h-full object-contain" </Link>
 
-      {/* Desktop Links - Visible only on MD screens and up */}
+     
       <div className="hidden md:flex gap-8 items-center font-medium italic">
         {navLinks.map((link) => (
           <a key={link.name} href={link.href} className="text-[#e0d7ff] hover:text-purple-400 transition-colors">
@@ -72,7 +72,6 @@ export default function Navbar() {
                 </a>
               ))}
 
-              {/* Direct Contact Button */}
               <a 
                 href="https://discord.com/users/1305099867126759516" 
                 className="flex items-center justify-center gap-2 w-full py-4 bg-purple-600 text-white rounded-2xl font-bold italic hover:bg-purple-500 active:bg-purple-700 transition-colors mt-4 shadow-lg shadow-purple-500/20"
