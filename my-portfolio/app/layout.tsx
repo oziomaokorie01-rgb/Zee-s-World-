@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,30 +13,15 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+              export const metadata = {
+                  title: "Zee's World | Senseii_ciel",
+                    description: "Technical Co-founder & AI Creator.",
+                      icons: {
+                          icon: 'https://peach-elderly-meadowlark-381.mypinata.cloud/ipfs/bafybeiapgfhhx2p57c3h2362uu5iihg7ypz3a7tsy5iimzsur2nmukbrha/the-site-is-zee-s-world-it-s-my-portfolio-i-was-th%20(1).png',
+                            },
+                            }
 
-export const metadata: Metadata = {
-    title: "Zee's World | Senseii_ciel",
-      description: "Technical Co-founder & AI Creator. Exploring the intersection of Web3 protocols and cinematic media. Built entirely on mobile.",
-        openGraph: {
-            images: ['/og-image.jpg'], // A cool screenshot of your site
-              },
-              }
-              
-function Footer() {
-    return (
-        <footer className="py-10 border-t border-white/5 flex flex-col items-center gap-4 text-center px-6">
-              <p className="italic text-purple-200/50 text-sm">
-                      Architected & Deployed on Mobile by <span className="text-white font-bold">Senseii_ciel</span>
-              </p>
-              <div className="flex gap-6 text-xs italic">
-                      <a href="https://x.com/Senseii_ciel" className="hover:text-blue-400">X</a>
-                      <a href="https://discord.com/users/1305099867126759516" className="hover:text-indigo-400">Discord</a>
-                      <a href="https://github.com/ozzy-sensei" className="hover:text-gray-400">GitHub</a>
-              </div>
-                                                                      <p className="text-[10px] opacity-20 uppercase tracking-[0.2em]">© 2026 Zee's World</p>
-                                                                          </footer>
-                                                                            );
-                                                                            }
+
 
                                                                             
 
@@ -47,9 +33,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="bg-black text-white min-h-screen flex flex-col overflow-x-hidden">
+        <Navbar />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
+      </body>
     </html>
   );
 }

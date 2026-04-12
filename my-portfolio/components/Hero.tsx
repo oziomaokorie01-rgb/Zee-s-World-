@@ -5,11 +5,11 @@ export default function Hero() {
   return (
       <section className="relative flex flex-col items-center justify-center min-h-screen px-6 text-center overflow-hidden">
             {/* Background Animation Overlay */}
-                  <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-0 z-0 w-full h-screen">
                           <img 
                                     src="https://peach-elderly-meadowlark-381.mypinata.cloud/ipfs/bafybeigulvyvggr56ldq47jagdkcysdz5nghddey6revr2g6obgijvh3q4/sunny.gif"
                                               alt="Background Animation"
-                                                        className="w-full h-full object-cover opacity-40"
+                                                        className="w-full h-full object-cover top-0 left-0"
                                                                 />
                                                                         {/* Dark Overlay to ensure text is readable */}
                                                                                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/60 to-[#050505]"></div>
