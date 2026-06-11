@@ -4,10 +4,23 @@
       <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <title>Zee's World</title>
-                </head>
-                  <body class="bg-neutral-950 text-neutral-100">
-                      <div id="root"></div>
-                          <script type="module" src="/src/main.jsx"></script>
-                            </body>
-                            </html>
-                            
+                  <!-- Injecting global configuration meta-tags to prevent text zooming on mobile devices -->
+                      <meta name="theme-color" content="#0a0a0a" />
+                        </head>
+                          <body class="bg-neutral-950 text-purple-100 selection:bg-purple-900 selection:text-purple-200 overflow-hidden min-h-screen relative">
+                              
+                                  <!-- Ambient Pixel Butterfly Animation Overlay Container -->
+                                      <div class="butterfly-enclosure fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                                            <div class="pixel-butterfly b-one"></div>
+                                                  <div class="pixel-butterfly b-two"></div>
+                                                        <div class="pixel-butterfly b-three"></div>
+                                                              <div class="pixel-butterfly b-four"></div>
+                                                                  </div>
+
+                                                                      <!-- The Mount Point for your React Application -->
+                                                                          <div id="root" class="relative z-10 w-full h-full"></div>
+                                                                              
+                                                                                  <script type="module" src="/src/main.jsx"></script>
+                                                                                    </body>
+                                                                                    </html>
+                                                                                    
