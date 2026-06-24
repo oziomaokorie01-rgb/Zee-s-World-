@@ -9,7 +9,14 @@ export default function UIOverlay() {
 
       return (
           <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6">
-                
+                {/* Ambient Pixel Butterfly Overlay */}
+                <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                  <div className="pixel-butterfly b-one"></div>
+                    <div className="pixel-butterfly b-two"></div>
+                      <div className="pixel-butterfly b-three"></div>
+                        <div className="pixel-butterfly b-four"></div>
+                        </div>
+                        
                       {/* Top Banner: Deep Purple Typographic Context Header */}
                             <div className="w-full pointer-events-auto bg-neutral-950/80 border border-purple-900/30 backdrop-blur-md p-4 rounded-lg shadow-xl shadow-purple-950/10">
                                     <div className="flex justify-between items-start">
