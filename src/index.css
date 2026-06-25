@@ -1,88 +1,99 @@
-/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind base;
-/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind components;
-/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind utilities;
+
 @layer base {
   html, body {
-      /* Forcing the classic, high-contrast serif font stack across the entire application workspace */
-          font-family: "Times New Roman", Times, Baskerville, Georgia, serif;
-              background-color: #05020a; /* A custom deep midnight-purple background tone */
-                  image-rendering: pixelated; /* Forces retro assets to maintain crisp borders without anti-alias blurring */
-                    }
-                    }
+      font-family: "Times New Roman", Times, Baskerville, Georgia, serif;
+          background-color: #05020a;
+              color: #f3e8ff;
+                }
+                }
 
-                    /* Custom Purple Scrollbar Rules for Mobile Drawers */
-                    ::-webkit-scrollbar {
-                      width: 4px;
-                      }
-                      ::-webkit-scrollbar-track {
-                        background: #0d0614;
-                        }
-                        ::-webkit-scrollbar-thumb {
-                          background: #6b21a8;
-                            border-radius: 2px;
-                            }
+                /* ==========================================
+                   ORGANIC BUTTERFLY & PIXIE DUST FLIGHT MATRIX
+                      ========================================== */
 
-/* ==========================================
-   PIXEL BUTTERFLY FLIGHT MATRIX MECHANICS
-   ========================================== */
+                      .organic-butterfly {
+                        position: absolute;
+                          width: 28px;
+                            height: 28px;
+                              pointer-events: none;
+                                z-index: 2;
+                                  /* Smooth realistic butterfly vector silhouette tinted cyan-blue */
+                                    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f0ff'><path d='M12 8c.3-1.5 1.5-3 3.5-3s3.5 1.5 3.5 3c0 2-2.5 4.5-7 6.5-4.5-2-7-4.5-7-6.5 0-1.5 1.5-3 3.5-3s3.2 1.5 3.5 3zm0 6.5c.2.8.8 1.5 2 2.5 1.5 1.3 2.5 2.5 2.5 3.5 0 1-1 1.5-2 1.5-1.5 0-2.2-1-2.5-2.5-.3 1.5-1 2.5-2.5 2.5-1 0-2-.5-2-1.5 0-1 1-2.2 2.5-3.5 1.2-1 1.8-1.7 2-2.5z'/></svg>");
+                                      background-size: contain;
+                                        background-repeat: no-repeat;
+                                        }
 
-/* Base Pixel Butterfly Properties */
-.pixel-butterfly {
-  position: absolute;
-  width: 14px;
-  height: 10px;
-  /* Cyberpunk Retro Blue/Cyan Color Matrix */
-  background: #00f0ff;
-  box-shadow:
-    0 -4px 0 #00f0ff, 0 4px 0 #00f0ff,
-    -4px 0 0 #00a8ff, 4px 0 0 #00a8ff,
-    0 0 12px rgba(0, 240, 255, 0.8); /* Core Neon Glow */
-  opacity: 0.85;
-  pointer-events: none;
-}
+                                        /* Organic Wing-Beat Mechanics */
+                                        @keyframes organicFlap {
+                                          0%, 100% { transform: scaleX(1) rotate(0deg); }
+                                            50% { transform: scaleX(0.2) rotate(5deg); }
+                                            }
 
-/* Wing Flap Animation */
-@keyframes flap {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.1); }
-}
+                                            /* Pixie Dust Shimmering Generation */
+                                            @keyframes shimmerDust {
+                                              0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(0, 240, 255, 0.4)); }
+                                                50% { opacity: 0.9; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 1)) drop-shadow(0 0 15px rgba(168, 85, 247, 0.8)); }
+                                                }
 
-/* Flight Path + Glowing Pixie Dust Trail Animation */
-@keyframes flight-path-one {
-  0% {
-    transform: translate(-10vw, 80vh) rotate(15deg);
-    /* box-shadow creates historical trail coordinates as it moves */
-    box-shadow: 0 0 12px #00f0ff;
-  }
-  25% {
-    box-shadow: -20px 10px 8px rgba(0, 240, 255, 0.4), -40px 15px 4px rgba(0, 168, 255, 0.2);
-  }
-  50% {
-    transform: translate(45vw, 40vh) rotate(-10deg);
-    box-shadow: -30px 20px 10px rgba(0, 240, 255, 0.4), -60px 30px 6px rgba(0, 168, 255, 0.2);
-  }
-  75% {
-    box-shadow: -20px -10px 8px rgba(0, 240, 255, 0.4), -40px -15px 4px rgba(0, 168, 255, 0.2);
-  }
-  100% {
-    transform: translate(110vw, -10vh) rotate(20deg);
-    box-shadow: 0 0 0 transparent;
-  }
-}
+                                                /* Flight Pathways with Trailing Coordinates */
+                                                @keyframes pathOne {
+                                                  0% { transform: translate(-10vw, 85vh) scale(0.8); }
+                                                    30% { transform: translate(30vw, 55vh) scale(1); }
+                                                      60% { transform: translate(65vw, 65vh) scale(0.9); }
+                                                        100% { transform: translate(110vw, 15vh) scale(0.7); }
+                                                        }
 
-/* Apply Flight Vectors to your Butterfly Nodes */
-.b-one {
-  animation: flight-path-one 14s infinite linear;
-}
+                                                        @keyframes pathTwo {
+                                                          0% { transform: translate(-10vw, 20vh) scale(1); }
+                                                            40% { transform: translate(40vw, 45vh) scale(0.8); }
+                                                              75% { transform: translate(70vw, 15vh) scale(1.1); }
+                                                                100% { transform: translate(110vw, 50vh) scale(0.9); }
+                                                                }
 
-.b-one::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: inherit;
-  animation: flap 0.15s infinite;
-}
-                                                                                                                                                
+                                                                /* Assigning Flight and Trails to Individual Assets */
+                                                                .b-one {
+                                                                  animation: pathOne 18s infinite linear;
+                                                                  }
+                                                                  .b-one::before {
+                                                                    content: '';
+                                                                      position: absolute;
+                                                                        inset: 0;
+                                                                          background: inherit;
+                                                                            animation: organicFlap 0.22s infinite ease-in-out;
+                                                                            }
+                                                                            /* The Pixie Dust Trail Element */
+                                                                            .b-one::after {
+                                                                              content: '✦ . ✧ . ✦';
+                                                                                position: absolute;
+                                                                                  left: -40px;
+                                                                                    top: 10px;
+                                                                                      font-size: 10px;
+                                                                                        color: #00f0ff;
+                                                                                          white-space: nowrap;
+                                                                                            animation: shimmerDust 0.4s infinite alternate;
+                                                                                            }
+
+                                                                                            .b-two {
+                                                                                              animation: pathTwo 22s infinite linear 4s;
+                                                                                              }
+                                                                                              .b-two::before {
+                                                                                                content: '';
+                                                                                                  position: absolute;
+                                                                                                    inset: 0;
+                                                                                                      background: inherit;
+                                                                                                        animation: organicFlap 0.18s infinite ease-in-out;
+                                                                                                        }
+                                                                                                        .b-two::after {
+                                                                                                          content: '✧ . ✦ . ✧';
+                                                                                                            position: absolute;
+                                                                                                              left: -35px;
+                                                                                                                top: 12px;
+                                                                                                                  font-size: 8px;
+                                                                                                                    color: #c084fc;
+                                                                                                                      white-space: nowrap;
+                                                                                                                        animation: shimmerDust 0.3s infinite alternate-reverse;
+                                                                                                                        }
+                                                                                                                        
