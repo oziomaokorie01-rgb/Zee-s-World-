@@ -3,6 +3,8 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { useWorldStore } from '../store/useWorldStore';
+import CameraController from './src/components/CameraController'; 
+
 
 // 1. New Camera Rig Component (Controls the view target smoothly)
 function CameraRig() {
@@ -43,7 +45,7 @@ function FloatingIsland() {
     if (islandRef.current) {
       islandRef.current.position.y = Math.sin(t * 1.2) * 0.15;
       
-      // Auto-rotates ONLY when exploring the general hub layout overview
+            // Auto-rotates ONLY when exploring the general hub layout overview
       if (!activeDistrict) {
         islandRef.current.rotation.y += 0.003;
       }
