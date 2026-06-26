@@ -9,91 +9,89 @@
               color: #f3e8ff;
                 }
                 }
+/* ==========================================
+   HIGH-FIDELITY DETAILED MONARCH BUTTERFLIES
+   ========================================== */
 
-                /* ==========================================
-                   ORGANIC BUTTERFLY & PIXIE DUST FLIGHT MATRIX
-                      ========================================== */
+.organic-butterfly {
+  position: absolute;
+  width: 42px; /* Increased size so the wing details are crisp and visible */
+  height: 42px;
+  pointer-events: none;
+  z-index: 2;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 
-                      .organic-butterfly {
-                        position: absolute;
-                          width: 28px;
-                            height: 28px;
-                              pointer-events: none;
-                                z-index: 2;
-                                  /* Smooth realistic butterfly vector silhouette tinted cyan-blue */
-                                    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f0ff'><path d='M12 8c.3-1.5 1.5-3 3.5-3s3.5 1.5 3.5 3c0 2-2.5 4.5-7 6.5-4.5-2-7-4.5-7-6.5 0-1.5 1.5-3 3.5-3s3.2 1.5 3.5 3zm0 6.5c.2.8.8 1.5 2 2.5 1.5 1.3 2.5 2.5 2.5 3.5 0 1-1 1.5-2 1.5-1.5 0-2.2-1-2.5-2.5-.3 1.5-1 2.5-2.5 2.5-1 0-2-.5-2-1.5 0-1 1-2.2 2.5-3.5 1.2-1 1.8-1.7 2-2.5z'/></svg>");
-                                      background-size: contain;
-                                        background-repeat: no-repeat;
-                                        }
+/* Detailed Blue Monarch (Matches the middle butterfly in your image) */
+.b-blue {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 45c-2-10-12-25-28-25-10 0-16 8-14 20 3 15 22 25 42 28M50 45c2-10 12-25 28-25 10 0 16 8 14 20-3 15-22 25-42 28' fill='%2300bfff' stroke='%23111' stroke-width='5'/><path d='M50 45c-1 5-8 20-20 25-8 3-15 0-15-8 0-10 15-18 35-17M50 45c1 5 8 20 20 25 8 3 15 0 15-8 0-10-15-18-35-17' fill='%231e90ff' stroke='%23111' stroke-width='4'/><path d='M25 25c5 5 15 15 25 20M75 25c-5 5-15 15-25 20M30 55c5-2 12-6 20-10M70 55c-5-2-12-6-20-10' stroke='%23000' stroke-width='3' fill='none'/><circle cx='12' cy='18' r='2' fill='%23fff'/><circle cx='88' cy='18' r='2' fill='%23fff'/><circle cx='18' cy='32' r='1.5' fill='%23fff'/><circle cx='82' cy='32' r='1.5' fill='%23fff'/></svg>");
+  animation: pathOne 22s infinite linear;
+}
+.b-blue::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  animation: monarchWingFlap 0.2s infinite ease-in-out;
+}
 
-                                        /* Organic Wing-Beat Mechanics */
-                                        @keyframes organicFlap {
-                                          0%, 100% { transform: scaleX(1) rotate(0deg); }
-                                            50% { transform: scaleX(0.2) rotate(5deg); }
-                                            }
+/* Detailed Purple Monarch (Matches the bottom-right butterfly in your image) */
+.b-purple {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 45c-2-10-12-25-28-25-10 0-16 8-14 20 3 15 22 25 42 28M50 45c2-10 12-25 28-25 10 0 16 8 14 20-3 15-22 25-42 28' fill='%23c084fc' stroke='%23111' stroke-width='5'/><path d='M50 45c-1 5-8 20-20 25-8 3-15 0-15-8 0-10 15-18 35-17M50 45c1 5 8 20 20 25 8 3 15 0 15-8 0-10-15-18-35-17' fill='%23a855f7' stroke='%23111' stroke-width='4'/><path d='M25 25c5 5 15 15 25 20M75 25c-5 5-15 15-25 20M30 55c5-2 12-6 20-10M70 55c-5-2-12-6-20-10' stroke='%23000' stroke-width='3' fill='none'/><circle cx='12' cy='18' r='2' fill='%23fff'/><circle cx='88' cy='18' r='2' fill='%23fff'/><circle cx='18' cy='32' r='1.5' fill='%23fff'/><circle cx='82' cy='32' r='1.5' fill='%23fff'/></svg>");
+  animation: pathTwo 26s infinite linear 5s;
+}
+.b-purple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  animation: monarchWingFlap 0.24s infinite ease-in-out;
+}
 
-                                            /* Pixie Dust Shimmering Generation */
-                                            @keyframes shimmerDust {
-                                              0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 2px rgba(0, 240, 255, 0.4)); }
-                                                50% { opacity: 0.9; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 1)) drop-shadow(0 0 15px rgba(168, 85, 247, 0.8)); }
-                                                }
+/* Pure Hardware-Accelerated 3D Wing Fold Animation */
+@keyframes monarchWingFlap {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.15) skewY(4deg); }
+}
 
-                                                /* Flight Pathways with Trailing Coordinates */
-                                                @keyframes pathOne {
-                                                  0% { transform: translate(-10vw, 85vh) scale(0.8); }
-                                                    30% { transform: translate(30vw, 55vh) scale(1); }
-                                                      60% { transform: translate(65vw, 65vh) scale(0.9); }
-                                                        100% { transform: translate(110vw, 15vh) scale(0.7); }
-                                                        }
+/* Pixie Dust Particle Trails */
+.b-blue::after {
+  content: '✦ . ✧ . ✦';
+  position: absolute;
+  left: -45px;
+  top: 15px;
+  font-size: 11px;
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ff;
+  white-space: nowrap;
+  opacity: 0.6;
+}
 
-                                                        @keyframes pathTwo {
-                                                          0% { transform: translate(-10vw, 20vh) scale(1); }
-                                                            40% { transform: translate(40vw, 45vh) scale(0.8); }
-                                                              75% { transform: translate(70vw, 15vh) scale(1.1); }
-                                                                100% { transform: translate(110vw, 50vh) scale(0.9); }
-                                                                }
+.b-purple::after {
+  content: '✧ . ✦ . ✧';
+  position: absolute;
+  left: -45px;
+  top: 15px;
+  font-size: 9px;
+  color: #d8b4fe;
+  text-shadow: 0 0 8px #c084fc;
+  white-space: nowrap;
+  opacity: 0.6;
+}
 
-                                                                /* Assigning Flight and Trails to Individual Assets */
-                                                                .b-one {
-                                                                  animation: pathOne 18s infinite linear;
-                                                                  }
-                                                                  .b-one::before {
-                                                                    content: '';
-                                                                      position: absolute;
-                                                                        inset: 0;
-                                                                          background: inherit;
-                                                                            animation: organicFlap 0.22s infinite ease-in-out;
-                                                                            }
-                                                                            /* The Pixie Dust Trail Element */
-                                                                            .b-one::after {
-                                                                              content: '✦ . ✧ . ✦';
-                                                                                position: absolute;
-                                                                                  left: -40px;
-                                                                                    top: 10px;
-                                                                                      font-size: 10px;
-                                                                                        color: #00f0ff;
-                                                                                          white-space: nowrap;
-                                                                                            animation: shimmerDust 0.4s infinite alternate;
-                                                                                            }
+/* Fluid Organic Flight Curves */
+@keyframes pathOne {
+  0% { transform: translate(-10vw, 80vh) rotate(15deg); }
+  35% { transform: translate(35vw, 45vh) rotate(-5deg); }
+  70% { transform: translate(70vw, 60vh) rotate(10deg); }
+  100% { transform: translate(110vw, 20vh) rotate(20deg); }
+}
 
-                                                                                            .b-two {
-                                                                                              animation: pathTwo 22s infinite linear 4s;
-                                                                                              }
-                                                                                              .b-two::before {
-                                                                                                content: '';
-                                                                                                  position: absolute;
-                                                                                                    inset: 0;
-                                                                                                      background: inherit;
-                                                                                                        animation: organicFlap 0.18s infinite ease-in-out;
-                                                                                                        }
-                                                                                                        .b-two::after {
-                                                                                                          content: '✧ . ✦ . ✧';
-                                                                                                            position: absolute;
-                                                                                                              left: -35px;
-                                                                                                                top: 12px;
-                                                                                                                  font-size: 8px;
-                                                                                                                    color: #c084fc;
-                                                                                                                      white-space: nowrap;
-                                                                                                                        animation: shimmerDust 0.3s infinite alternate-reverse;
-                                                                                                                        }
-                                                                                                                        
+@keyframes pathTwo {
+  0% { transform: translate(-10vw, 25vh) rotate(5deg); }
+  45% { transform: translate(45vw, 55vh) rotate(20deg); }
+  80% { transform: translate(75vw, 15vh) rotate(-10deg); }
+  100% { transform: translate(110vw, 40vh) rotate(5deg); }
+}
+              
