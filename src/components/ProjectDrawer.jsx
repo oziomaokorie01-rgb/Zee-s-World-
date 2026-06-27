@@ -3,11 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useWorldStore } from '../store/useWorldStore';
 import { projects } from '../data/projectsData';
 
-// Mock data content for your room tours and project showreels
 const districtContent = {
   workshop: {
     character: "Zee the Builder",
-    avatar: "💻", // This will eventually be your custom 90s retro/chibi character art
+    avatar: "💻",
     title: "The Smart Contract Workshop",
     description: "Catch Zee compiling smart contracts, tweaking Web3 dApps, and managing scripts from a terminal.",
     projects: ["Solana Prediction Market MVP", "USSD Agent-Coordinator", "Telegram Social Deduction Game Bot"]
@@ -43,8 +42,7 @@ const districtContent = {
 };
 
 export default function ProjectDrawer() {
-  const { activeProjectId, closeProject } = useWorldStore();
-  const activeDistrict = useWorldStore((state) => state.activeDistrict);
+  const { activeProjectId, closeProject, activeDistrict, setActiveDistrict } = useWorldStore();
   const currentProject = projects.find(p => p.id === activeProjectId);
   const data = districtContent[activeDistrict];
 
@@ -72,7 +70,7 @@ export default function ProjectDrawer() {
               transition={{ type: "spring", damping: 30, stiffness: 220 }}
               className="absolute bottom-0 left-0 right-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-neutral-900 border-t border-purple-900/60 p-6 shadow-2xl"
             >
-              <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-purple-900/50" onClick={closeProject} />
+              <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-purple-900/50 cursor-pointer" onClick={closeProject} />
 
               <div className="flex items-center space-x-4 mb-4">
                 <div className="text-4xl p-2.5 bg-neutral-950 rounded-xl border border-purple-950 flex items-center justify-center shadow-inner">
@@ -98,7 +96,7 @@ export default function ProjectDrawer() {
               <div className="mb-6">
                 <h4 className="text-xs font-mono uppercase text-purple-400/60 tracking-wider mb-2">Compiled Tech Stack</h4>
                 <div className="flex flex-wrap gap-1.5">
-                  {currentProject.techStack.map((tech) => (
+                  {currentProject.techStack?.map((tech) => (
                     <span key={tech} className="px-2.5 py-1 text-xs font-mono rounded bg-neutral-950 border border-purple-950 text-purple-300">
                       {tech}
                     </span>
@@ -125,10 +123,20 @@ export default function ProjectDrawer() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute right-0 top-0 bottom-0 w-full sm:w-[420px] bg-[#0b061a]/90 backdrop-blur-xl border-l border-purple-500/10 p-6 z-40 overflow-y-auto text-white flex flex-col gap-6"
+              className="absolute right-0 top-0 bottom-0 w-full sm:w-[420px] bg-[#0b061a]/95 backdrop-blur-xl border-l border-purple-500/10 p-6 z-40 overflow-y-auto text-white flex flex-col gap-6"
             >
+              {/* Back navigation option at the top of the drawer container */}
+              <div className="mt-4">
+                <button
+                  onClick={() => setActiveDistrict(null)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-purple-950/50 hover:bg-purple-900/50 border border-purple-500/20 text-purple-300 hover:text-white font-mono text-xs tracking-wider transition-all cursor-pointer active:scale-[0.98]"
+                >
+                  ← RETURN TO ORBIT HUB
+                </button>
+              </div>
+
               {/* Header Module: Character Tour Guide */}
-              <div className="mt-16 flex items-center gap-4 p-4 rounded-xl bg-purple-950/20 border border-purple-500/10">
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-purple-950/20 border border-purple-500/10">
                 <div className="text-4xl bg-purple-900/40 p-2.5 rounded-xl border border-purple-400/20 shadow-inner">
                   {data.avatar}
                 </div>
