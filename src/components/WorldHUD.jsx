@@ -5,13 +5,14 @@ import { useWorldStore } from '../store/useWorldStore';
 export default function WorldHUD() {
   const activeDistrict = useWorldStore((state) => state.activeDistrict);
   const setActiveDistrict = useWorldStore((state) => state.setActiveDistrict);
-
+const districtName = typeof activeDistrict === 'string' ? activeDistrict : '';
   // Capitalize the first letter of the district name for clean display text
   const formatDistrictName = (name) => {
     if (!name) return '';
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
-
+  if (!activeDistrict) return null;
+  
   return (
     <div className="absolute inset-0 pointer-events-none z-50 flex flex-col justify-between p-6">
       {/* TOP BAR: Context-aware Back Navigation */}
@@ -66,6 +67,38 @@ export default function WorldHUD() {
           )}
         </AnimatePresence>
       </div>
+  );
+}
+
+{/* LEFT: Clean Explicit Escape Route Button */}
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          setActiveDistrict(null);
+        }}
+        className="pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-950/80 backdrop-blur-md border border-purple-500/40 text-purple-200 text-xs font-mono font-medium tracking-wide shadow-2xl shadow-black hover:bg-purple-900 hover:border-purple-400 hover:text-white cursor-pointer active:scale-95 transition-all"
+      >
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          strokeWidth={2.5} 
+          stroke="currentColor" 
+          className="w-3.5 h-3.5"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+        <span>RETURN_TO_HUB</span>
+      </button>
+
+      {/* RIGHT: Live Location Data Terminal */}
+      <div className="hidden sm:flex flex-col items-end px-4 py-1.5 rounded-xl bg-black/60 backdrop-blur-md border border-neutral-800/60 text-right">
+        <span className="text-[9px] uppercase tracking-widest text-neutral-500 font-mono font-bold">SYSTEM_LOC</span>
+        <span className="text-xs font-mono font-medium text-purple-300 tracking-wide">
+          ZEE_CORE // {formatDistrictName(districtName)}
+        </span>
+      </div>
+
     </div>
   );
 }
