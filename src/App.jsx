@@ -6,6 +6,7 @@ import WorldCanvas from './components/WorldCanvas';
 import UIOverlay from './components/UIOverlay';
 import ProjectDrawer from './components/ProjectDrawer';
 import TourGuideOverlay from './components/TourGuideOverlay';
+import ASCIIRain from './components/ASCIIRain';
 
 export default function App() {
   const introComplete = useIntroStore((state) => state.introComplete);
