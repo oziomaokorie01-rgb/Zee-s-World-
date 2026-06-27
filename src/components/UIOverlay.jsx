@@ -11,12 +11,6 @@ export default function UIOverlay() {
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6">
-      
-      {/* 1. Ambient Background Particles */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="organic-butterfly b-blue" />
-        <div className="organic-butterfly b-purple" />
-      </div>
 
       {/* 2. Dynamic Header Block */}
       <div className="w-full pointer-events-auto bg-neutral-950/80 border border-purple-900/30 backdrop-blur-md p-4 rounded-lg shadow-xl shadow-purple-950/10 z-20">
