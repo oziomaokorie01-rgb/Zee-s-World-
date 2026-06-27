@@ -4,7 +4,6 @@ import { useIntroStore } from './store/useIntroStore';
 import CinematicIntro from './components/CinematicIntro';
 import WorldCanvas from './components/WorldCanvas';
 import UIOverlay from './components/UIOverlay';
-import WorldHUD from './components/WorldHUD';
 import ProjectDrawer from './components/ProjectDrawer';
 import TourGuideOverlay from './components/TourGuideOverlay';
 
@@ -24,9 +23,7 @@ export default function App() {
         <div className="absolute inset-0 bg-radial-gradient from-[#0f0720] to-[#05020a] z-0" />
       )}
       
-      {/* 3. Floating 3D Navigation HUD Layer (Only active when in 3D viewing mode) */}
-      {viewMode === '3d' && <WorldHUD />}
-       {/* MONTS DIRECTLY HERE IN THE LAYER STACK */}
+      {/* 3. Mid-Layer Character Graphics */}
       <TourGuideOverlay />
       
       {/* 4. Core User Interface Panels & Project Showcases */}
