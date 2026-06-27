@@ -69,10 +69,52 @@ export default function ProjectDrawer() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute right-0 bottom-0 left-0 sm:right-auto w-full sm:w-[420px] bg-[#0b061a]/90 backdrop-blur-xl border-t sm:border-l border-purple-500/10 p-6 z-40 overflow-y-auto text-white flex flex-col gap-6"
+              transition={{ type: "spring", damping: 30, stiffness: 220 }}
+              className="absolute bottom-0 left-0 right-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-neutral-900 border-t border-purple-900/60 p-6 shadow-2xl"
             >
-              {/* Project content here */}
+              <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-purple-900/50" onClick={closeProject} />
+
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="text-4xl p-2.5 bg-neutral-950 rounded-xl border border-purple-950 flex items-center justify-center shadow-inner">
+                  {currentProject.logo}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-normal text-purple-100 italic">{currentProject.title}</h2>
+                  <span className="inline-block px-2 py-0.5 mt-1 text-[10px] font-mono rounded bg-purple-950 text-purple-300 border border-purple-800/40 uppercase tracking-wider">
+                    File Entry // {currentProject.status}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-purple-200 leading-relaxed text-base italic mb-4">
+                {currentProject.shortDesc}
+              </p>
+              
+              <p className="text-neutral-400 text-sm leading-relaxed border-l-2 border-purple-900/40 pl-3 py-1 mb-5 font-serif">
+                {currentProject.longDesc}
+              </p>
+
+              {/* Compiled Tech Matrix */}
+              <div className="mb-6">
+                <h4 className="text-xs font-mono uppercase text-purple-400/60 tracking-wider mb-2">Compiled Tech Stack</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {currentProject.techStack.map((tech) => (
+                    <span key={tech} className="px-2.5 py-1 text-xs font-mono rounded bg-neutral-950 border border-purple-950 text-purple-300">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Links Buttons */}
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <a href={currentProject.github} target="_blank" rel="noreferrer" className="flex items-center justify-center py-3 px-4 rounded border border-purple-900/50 text-sm font-normal text-purple-300 bg-neutral-950 hover:bg-purple-950/50 active:scale-98 transition-all">
+                  Source Repository
+                </a>
+                <a href={currentProject.liveLink} target="_blank" rel="noreferrer" className="flex items-center justify-center py-3 px-4 rounded bg-purple-700 text-sm font-bold text-white shadow-lg shadow-purple-900/30 hover:bg-purple-600 active:scale-98 transition-all">
+                  Launch Deployment
+                </a>
+              </div>
             </motion.div>
           )}
 
