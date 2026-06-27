@@ -12,29 +12,35 @@ export default function UIOverlay() {
   return (
     <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6">
       
-      {/* Ambient Monarch Butterfly Overlay Container */}
+      {/* 1. Ambient Background Particles */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="organic-butterfly b-blue" />
         <div className="organic-butterfly b-purple" />
       </div>
 
-      {/* Top Banner */}
+      {/* 2. Dynamic Header Block */}
       <div className="w-full pointer-events-auto bg-neutral-950/80 border border-purple-900/30 backdrop-blur-md p-4 rounded-lg shadow-xl shadow-purple-950/10 z-20">
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-3xl font-normal italic tracking-tight text-purple-400">
-              {districtInfo ? districtInfo.name : "Zee's World"}
+              {activeDistrict && districtInfo ? districtInfo.name : "Zee's World"}
             </h1>
             <p className="text-xs font-mono text-purple-300/60 uppercase tracking-widest mt-1">
-              {districtInfo ? districtInfo.subtitle : "An Inventor's Work Under Construction"}
+              {activeDistrict && districtInfo ? districtInfo.subtitle : "An Inventor's Work Under Construction"}
             </p>
           </div>
           
-          {/* Quick View Mode Toggle Switcher */}
+          {/* View Mode Switcher Control */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
-              className="text-xs font-mono border border-neutral-800 px-2.5 py-1 rounded bg-neutral-900/60 text-neutral-400 hover:text-white hover:border-purple-500/30 transition-all"
+              onClick={() => {
+                // If switching back to 3D, clear any locked district to reset camera tracking
+                if (viewMode === '2d') {
+                  setActiveDistrict(null);
+                }
+                setViewMode(viewMode === '3d' ? '2d' : '3d');
+              }}
+              className="text-xs font-mono border border-neutral-800 px-2.5 py-1 rounded bg-neutral-900/60 text-neutral-400 hover:text-white hover:border-purple-500/30 transition-all cursor-pointer"
             >
               MODE // {viewMode?.toUpperCase()}
             </button>
@@ -42,10 +48,11 @@ export default function UIOverlay() {
         </div>
       </div>
 
-      {/* Center Layout: Displays ONLY in 2D Mode, or when no 3D district is chosen */}
+      {/* 3. Center Navigation: STRICTLY EXCLUSIVE TO 2D SIMPLIFIED MODE */}
       <div className="w-full my-auto flex flex-col items-center justify-center pointer-events-auto z-20">
         <AnimatePresence mode="wait">
-          {(!activeDistrict || viewMode === '2d') && (
+          {/* CRITICAL FIX: Only display this list if the visitor explicitly requests the simplified 2D view layout */}
+          {viewMode === '2d' && !activeDistrict && (
             <motion.div 
               key="express-directory"
               initial={{ opacity: 0, scale: 0.98 }}
@@ -55,7 +62,7 @@ export default function UIOverlay() {
             >
               <div className="p-2 border-b border-purple-900/40 text-center">
                 <span className="text-xs italic tracking-wider text-purple-300/70">
-                  Select an immediate workspace directory:
+                  Simplified Workspace Directory:
                 </span>
               </div>
               
@@ -64,9 +71,8 @@ export default function UIOverlay() {
                   key={key}
                   onClick={() => {
                     setActiveDistrict(key);
-                    if (viewMode === '2d') setViewMode('3d'); // Auto-focus into 3D view on selection
                   }}
-                  className="w-full text-left p-3 rounded bg-neutral-900/90 border border-purple-950 hover:border-purple-500/60 transition-all group flex justify-between items-center"
+                  className="w-full text-left p-3 rounded bg-neutral-900/90 border border-purple-950 hover:border-purple-500/60 transition-all group flex justify-between items-center cursor-pointer"
                 >
                   <div>
                     <h3 className="text-lg font-normal text-purple-200 group-hover:text-purple-400 transition-colors">
@@ -86,7 +92,7 @@ export default function UIOverlay() {
         </AnimatePresence>
       </div>
 
-      {/* Footer Layer */}
+      {/* 4. Global Structural Footer */}
       <footer className="w-full pointer-events-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] font-mono text-neutral-500 select-none border-t border-neutral-900/40 pt-4 z-20">
         <div className="flex items-center gap-1.5">
           <span>Built by Senseii_ciel</span>
