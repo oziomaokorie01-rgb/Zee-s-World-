@@ -1,11 +1,13 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useWorldStore } from '../store/useWorldStore';
-import { districtsData, projects } from '../data/projectsData';
+import { districtsData } from '../data/projectsData';
 
 export default function UIOverlay() {
-  const { activeDistrict, setActiveDistrict, openProject } = useWorldStore();
+  const { activeDistrict, setActiveDistrict } = useWorldStore();
   const districtInfo = districtsData[activeDistrict];
+  const viewMode = useWorldStore((state) => state.viewMode);
+  const setViewMode = useWorldStore((state) => state.setViewMode);
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6">
@@ -27,15 +29,24 @@ export default function UIOverlay() {
             </p>
           </div>
           
-          {/* Quick Clear Reset Button */}
-          {activeDistrict && (
-            <button 
-              onClick={() => setActiveDistrict(null)}
-              className="text-xs border border-purple-500/40 px-2 py-1 rounded text-purple-400 hover:bg-purple-950 transition-colors"
+          {/* Controls Cluster: View Mode Trigger + Reset Button */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
+              className="text-xs font-mono border border-neutral-800 bg-neutral-900/60 px-2.5 py-1 rounded text-neutral-400 hover:text-white hover:border-purple-500/30 transition-all"
             >
-              Return to Orbit
+              MODE // {viewMode.toUpperCase()}
             </button>
-          )}
+
+            {activeDistrict && (
+              <button 
+                onClick={() => setActiveDistrict(null)}
+                className="text-xs border border-purple-500/40 px-2 py-1 rounded text-purple-400 hover:bg-purple-950 transition-colors"
+              >
+                Return to Orbit
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -57,7 +68,7 @@ export default function UIOverlay() {
                 </span>
               </div>
               
-              {Object.entries(districtsData).map(([key, value]) => (
+              {districtsData && Object.entries(districtsData).map(([key, value]) => (
                 <button
                   key={key}
                   onClick={() => setActiveDistrict(key)}
