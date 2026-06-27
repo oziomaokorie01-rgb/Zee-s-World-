@@ -135,17 +135,46 @@ export default function ProjectDrawer() {
                 </button>
               </div>
 
-              {/* Header Module: Character Tour Guide */}
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-purple-950/20 border border-purple-500/10">
-                <div className="text-4xl bg-purple-900/40 p-2.5 rounded-xl border border-purple-400/20 shadow-inner">
-                  {data.avatar}
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold tracking-widest text-purple-400 uppercase">Tour Guide</span>
-                  <h3 className="text-lg font-bold tracking-wide text-white">{data.character}</h3>
-                </div>
-              </div>
+       {/* Header Module: Character Tour Guide — Fully Refactored for Step 4 */}
+<div className="relative overflow-hidden flex flex-col gap-3 p-4 rounded-xl bg-gradient-to-b from-purple-950/40 to-neutral-950/60 border border-purple-500/20 shadow-2xl">
+  
+  {/* Glitch Tech Background Accent Indicator */}
+  <div className="absolute top-2 right-2 text-[9px] font-mono text-purple-500/30 tracking-widest select-none">
+    SYSTEM // PERS_ID_0{activeDistrict === 'workshop' ? '1' : activeDistrict === 'greenhouse' ? '02' : '03'}
+  </div>
 
+  <div className="flex items-center gap-4">
+    {/* Avatar Frame: Built for 90s Anime Character Portrait / Chibi Canvas */}
+    <div className="relative w-16 h-16 bg-neutral-950 rounded-xl border border-purple-500/30 flex items-center justify-center overflow-hidden group/avatar shadow-inner">
+      {/* Background scanline effect behind avatar */}
+      <div className="absolute inset-0 bg-scanlines opacity-20 pointer-events-none" />
+      
+      {/* Target Asset Box */}
+      <span className="text-3xl relative z-10 filter drop-shadow-[0_4px_6px_rgba(168,85,247,0.4)] animate-float">
+        {data.avatar}
+      </span>
+      
+      {/* Matrix corners */}
+      <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-purple-400/50" />
+      <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-purple-400/50" />
+    </div>
+
+    <div>
+      <div className="flex items-center gap-2">
+        <span className="text-[9px] font-mono font-bold tracking-widest text-purple-400 bg-purple-950/80 border border-purple-800/40 px-1.5 py-0.5 rounded uppercase">
+          District Guide
+        </span>
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+      </div>
+      <h3 className="text-xl font-bold tracking-wide text-white font-sans mt-0.5">{data.character}</h3>
+    </div>
+  </div>
+
+  {/* Dialog box / transmission container for the tour instructions */}
+  <div className="bg-neutral-950/80 border border-purple-900/30 p-2.5 rounded text-xs font-mono text-purple-300 leading-relaxed relative">
+    <span className="text-purple-500 mr-1">►</span> {data.description}
+  </div>
+</div>
               {/* District Details */}
               <div>
                 <h2 className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-300">
