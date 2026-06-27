@@ -28,7 +28,7 @@ export const districtsData = {
     ]
   },
   // Lab, Court, and Void follow the exact same updated configuration...
-};
+
 lab: { name: "The Research Lab", subtitle: "Deep Tech & Things I'm Learning" },
             court: { name: "The Basketball Quarter", subtitle: "Lessons from the Game" },
               void: { name: "The Void", subtitle: "Abandoned Dreams & Unfinished Systems" }
