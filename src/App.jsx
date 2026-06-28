@@ -30,8 +30,7 @@ export default function App() {
       <ASCIIRain />
       {/* 3. Mid-Layer Character Graphics */}
       <TourGuideOverlay />
-      
-      {/* 4. Core User Interface Panels & Project Showcases */}
+            {/* 4. Core User Interface Panels & Project Showcases */}
       <UIOverlay />
       <ProjectDrawer />
     </div>
