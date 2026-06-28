@@ -2,7 +2,7 @@ import React from 'react';
 import { useWorldStore } from './store/useWorldStore';
 import { useIntroStore } from './store/useIntroStore';
 import CinematicIntro from './components/CinematicIntro';
-import NarrativeHUD fom './components/NarrativeHUD';
+import NarrativeHUD from './components/NarrativeHUD';
 import WorldCanvas from './components/WorldCanvas';
 import UIOverlay from './components/UIOverlay';
 import ProjectDrawer from './components/ProjectDrawer';
