@@ -20,8 +20,10 @@ export default function App() {
       
       {/* 2. Background Core Layer: Interactive 3D Scene OR static background matrix */}
       {viewMode === '3d' ? (
+      <>
       <NarrativeHUD />
         <WorldCanvas />
+      </>
       ) : (
         <div className="absolute inset-0 bg-radial-gradient from-[#0f0720] to-[#05020a] z-0" />
       )}
