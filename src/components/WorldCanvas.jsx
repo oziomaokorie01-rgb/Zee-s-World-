@@ -4,205 +4,263 @@ import { OrbitControls, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { useWorldStore } from '../store/useWorldStore';
 
-// 1. Camera Rig Component (Smoothed Transitions & Performance Fixed)
+// 1. Cinematic Camera Rig & Cutscene System Director
 function CameraRig() {
   const { camera } = useThree();
+  const tourTimeline = useWorldStore((state) => state.tourTimeline);
+  const activeObject = useWorldStore((state) => state.activeObject);
   const activeDistrict = useWorldStore((state) => state.activeDistrict);
+  const setTourTimeline = useWorldStore((state) => state.setTourTimeline);
+  const setActiveObject = useWorldStore((state) => state.setActiveObject);
 
-  // Precise coordinate mapping for camera positions and viewing focal points
-  const cameraTargets = {
-    default: { pos: [0, 4, 7], lookAt: [0, 0, 0] },
+  // Single persistent vectors to optimize garbage collection execution speeds
+  const targetPosVec = useRef(new THREE.Vector3(0, 4, 7));
+  const targetLookVec = useRef(new THREE.Vector3(0, 0, 0));
+  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
+  
+  // Internal timer track for automatic cutscene pans
+  const timer = useRef(0);
+  const internalState = useRef('init');
+
+  // Exact coordinate map arrays matching your story storyboard
+  const bedroomObjects = [
+    { id: 'laptop', pos: [-0.6, 0.4, 0.8], lookAt: [-0.6, 0.2, 0.3] },
+    { id: 'books', pos: [0.7, 0.3, 0.9], lookAt: [0.7, 0.1, 0.2] },
+    { id: 'basketball', pos: [0.8, -0.6, 1.2], lookAt: [0.8, -0.7, 0.6] },
+    { id: 'mirror', pos: [-1.2, 0.5, 0.2], lookAt: [-1.8, 0.5, 0.2] },
+    { id: 'telescope', pos: [0.0, 0.6, -0.5], lookAt: [0.0, 0.7, -1.5] }
+  ];
+
+  const districtTargets = {
     workshop: { pos: [-2.8, 1.5, 3.2], lookAt: [-1.8, 0, 1.2] },
     greenhouse: { pos: [2.8, 1.5, -0.2], lookAt: [1.8, -0.1, -1.2] },
     lab: { pos: [-3.2, 1.8, -2.5], lookAt: [-2.0, 0, -1.8] },
-    court: { pos: [3.2, 1.8, 2.5], lookAt: [2.0, 0, 1.8] },
-    void: { pos: [0, 3.5, 0.5], lookAt: [0, -4, 0] }
+    court: { pos: [3.2, 1.8, 2.5], lookAt: [2.0, 0, 1.8] }
   };
 
-  // Persistent vector instances to completely avoid garbage collection lag spikes
-  const targetPosVec = useRef(new THREE.Vector3());
-  const targetLookVec = useRef(new THREE.Vector3());
-  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
+  useFrame((state, delta) => {
+    const elapsed = state.clock.getElapsedTime();
 
-  useFrame(() => {
-    // FIX: Safely evaluate target identity keys to prevent runtime crash
-    const targetKey = activeDistrict && cameraTargets[activeDistrict] ? activeDistrict : 'default';
-    const target = cameraTargets[targetKey];
-    
-    // Smoothly interpolate position and lens direction vectors inline
-    targetPosVec.current.set(...target.pos);
-    targetLookVec.current.set(...target.lookAt);
+    // PHASE A: INITIAL WAKE AND EXT-ORBIT ROTATION
+    if (tourTimeline === 'TV_INTRO' || tourTimeline === 'BUTTERFLY_WAKE') {
+      targetPosVec.current.set(Math.sin(elapsed * 0.3) * 8, 4, Math.cos(elapsed * 0.3) * 8);
+      targetLookVec.current.set(0, 0, 0);
 
-    camera.position.lerp(targetPosVec.current, 0.05);
-    currentLookAt.current.lerp(targetLookVec.current, 0.05);
+      // Simple auto advancement out of Wake sequence after 4.5 seconds
+      if (tourTimeline === 'BUTTERFLY_WAKE') {
+        timer.current += delta;
+        if (timer.current > 4.5) {
+          timer.current = 0;
+          setTourTimeline('BEDROOM_PAN');
+          setActiveObject('laptop');
+        }
+      }
+    }
+
+    // PHASE B: SEQUENTIAL AUTOMATIC BEDROOM INSPECTION PAN LOOP
+    else if (tourTimeline === 'BEDROOM_PAN') {
+      const currentItem = bedroomObjects.find(o => o.id === activeObject) || bedroomObjects[0];
+      // Offset position deep inside the central observatory coordinates
+      targetPosVec.current.set(currentItem.pos[0], currentItem.pos[1] + 0.2, currentItem.pos[2]);
+      targetLookVec.current.set(...currentItem.lookAt);
+
+      timer.current += delta;
+      // Spend exactly 4.5 seconds displaying each overlay note before hopping to the next
+      if (timer.current > 4.5) {
+        timer.current = 0;
+        const index = bedroomObjects.findIndex(o => o.id === activeObject);
+        if (index < bedroomObjects.length - 1) {
+          setActiveObject(bedroomObjects[index + 1].id);
+        } else {
+          // Finished bedroom pan list -> trigger telescope interactive mode
+          setTourTimeline('TELESCOPE_CHOOSE');
+          setActiveObject(null);
+        }
+      }
+    }
+
+    // PHASE C: TELESCOPE SATELLITE SYSTEM RENDER STATE
+    else if (tourTimeline === 'TELESCOPE_CHOOSE') {
+      if (!activeDistrict) {
+        // High top-down satellite mapping lens alignment view
+        targetPosVec.current.set(0, 5.5, 0.1);
+        targetLookVec.current.set(0, 0, 0);
+      } else {
+        // User swiped or tapped a target district -> trigger street travel sequence cutscene
+        setTourTimeline('STREET_TRANSIT');
+        timer.current = 0;
+      }
+    }
+
+    // PHASE D: AUTOMATIC STREET SYSTEM TRANSIT RUN
+    else if (tourTimeline === 'STREET_TRANSIT') {
+      timer.current += delta;
+      
+      // Mimic sweeping along skyscrapers by interpolating lens heights dynamically
+      if (timer.current < 1.5) {
+        targetPosVec.current.set(0, 6.0, 5.0); // Ascend up into cloud matrix
+        targetLookVec.current.set(0, -1, 0);
+      } else if (timer.current < 3.5) {
+        // Dip down low into city intersection street paths
+        targetPosVec.current.set(2.0, 0.8, -3.0);
+        targetLookVec.current.set(-2.0, 0.8, 2.0);
+      } else {
+        // Cutscene transit block ends -> snap directly into district desk view
+        timer.current = 0;
+        setTourTimeline('ROOM_EXPLORE');
+      }
+    }
+
+    // PHASE E: ROOM DETAIL NODE FOCUS EXPLORATION
+    else if (tourTimeline === 'ROOM_EXPLORE' && activeDistrict) {
+      const targetRoom = districtTargets[activeDistrict] || { pos: [0, 4, 7], lookAt: [0, 0, 0] };
+      targetPosVec.current.set(...targetRoom.pos);
+      targetLookVec.current.set(...targetRoom.lookAt);
+    }
+
+    // PHASE F: VACUUM INDUCED SYSTEM FALL SEQUENCE
+    else if (tourTimeline === 'THE_VOID_FALL') {
+      // Create a dizzying, accelerating camera spin down into black space
+      targetPosVec.current.set(Math.sin(elapsed * 4) * 2, camera.position.y - 0.08, Math.cos(elapsed * 4) * 2);
+      targetLookVec.current.set(0, camera.position.y - 4, 0);
+    }
+
+    // Core interpolation execution loop
+    camera.position.lerp(targetPosVec.current, 0.045);
+    currentLookAt.current.lerp(targetLookVec.current, 0.045);
     camera.lookAt(currentLookAt.current);
   });
 
   return null;
 }
 
-// 2. The Integrated Floating Island Component
+// 2. Animated Cyber Butterfly / Drone Guide Mesh Asset
+function ButterflyDrone() {
+  const meshRef = useRef();
+  const tourTimeline = useWorldStore((state) => state.tourTimeline);
+  const activeObject = useWorldStore((state) => state.activeObject);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (!meshRef.current) return;
+
+    // Fast organic wing flapping frequency
+    meshRef.current.rotation.z = Math.sin(t * 22) * 0.4;
+
+    // Butterfly paths positioning mechanics based on active timeline state
+    if (tourTimeline === 'BUTTERFLY_WAKE') {
+      // Swoop around the core structure twice
+      meshRef.current.position.set(Math.sin(t * 3.5) * 4.0, Math.cos(t * 1.5) * 0.5 + 1.0, Math.cos(t * 3.5) * 4.0);
+    } else if (tourTimeline === 'BEDROOM_PAN') {
+      // Hover dynamically close right directly above the active item focal target
+      meshRef.current.position.set(state.camera.position.x + Math.sin(t * 2) * 0.15, state.camera.position.y - 0.1, state.camera.position.z - 0.4);
+    } else {
+      // Default to hovering over the centerpiece core observatory engine
+      meshRef.current.position.set(0, Math.sin(t * 2) * 0.1 + 0.9, 0);
+    }
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <coneGeometry args={[0.06, 0.18, 4]} />
+      <meshStandardMaterial color="#00f0ff" emissive="#00f0ff" emissiveIntensity={2.5} wireframe />
+    </mesh>
+  );
+}
+
+// 3. Main Floating World Map Blueprint Component
 function FloatingIsland() {
   const islandRef = useRef(null);
-  const activeDistrict = useWorldStore((state) => state.activeDistrict);
+  const tourTimeline = useWorldStore((state) => state.tourTimeline);
+  const setActiveDistrict = useWorldStore((state) => state.setActiveDistrict);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (islandRef.current) {
-      // Gentle floating bob rhythm
-      islandRef.current.position.y = Math.sin(t * 1.2) * 0.15;
+      // Maintain continuous base structural floating rhythm
+      islandRef.current.position.y = Math.sin(t * 1.2) * 0.12;
       
-      // Auto-rotates only if viewing from the default overview perspective
-      if (!activeDistrict) {
-        islandRef.current.rotation.y += 0.003;
+      // Stop rotation during explicit closeup room scans to preserve coordinate tracking orientation
+      if (tourTimeline === 'TV_INTRO' || tourTimeline === 'BUTTERFLY_WAKE' || tourTimeline === 'TELESCOPE_CHOOSE') {
+        islandRef.current.rotation.y = t * 0.02;
+      } else if (tourTimeline === 'THE_VOID_FALL') {
+        islandRef.current.position.y += 0.05; // Make structural island move upward fast as visitor drops down
       }
     }
   });
 
-  // Small helper to switch cursor styles on mesh hover
-  const setCursor = (hovered) => {
-    document.body.style.cursor = hovered ? 'pointer' : 'auto';
-  };
-
   return (
     <group ref={islandRef}>
-      {/* Main Base Landmass */}
-      <mesh rotation={[0, 0, 0]} position={[0, -1, 0]} receiveShadow>
+      <ButterflyDrone />
+
+      {/* Main Base Landmass Platform Block */}
+      <mesh position={[0, -1, 0]} receiveShadow>
         <cylinderGeometry args={[3, 2.2, 1.2, 7]} />
-        <meshStandardMaterial color="#0f0720" flatShading roughness={0.7} />
+        <meshStandardMaterial color="#0a0a23" flatShading roughness={0.8} />
       </mesh>
 
-      {/* The Observatory Centerpiece */}
-      <mesh position={[0, 0, 0]} castShadow>
-        <dodecahedronGeometry args={[0.7]} />
-        <meshStandardMaterial color="#581c87" flatShading roughness={0.3} metalness={0.2} />
+      {/* The Central Bedroom Observatory Hub */}
+      <mesh position={[0, 0.2, 0]} castShadow>
+        <dodecahedronGeometry args={[0.75]} />
+        <meshStandardMaterial color="#1e1b4b" flatShading roughness={0.4} roughness={0.1} />
       </mesh>
 
-      {/* District Node 1: Workshop (Development Hub) */}
-      <mesh 
-        position={[-1.8, 0, 1.2]} 
-        castShadow
-        onPointerOver={() => setCursor(true)}
-        onPointerOut={() => setCursor(false)}
-        onClick={(e) => {
-          e.stopPropagation();
-          useWorldStore.getState().setActiveDistrict('workshop');
-        }}
-      >
+      {/* Micro-Room Core 1: Developer Workshop Node */}
+      <mesh position={[-1.8, 0.1, 1.2]} onClick={(e) => {
+        if (tourTimeline !== 'TELESCOPE_CHOOSE') return;
+        e.stopPropagation();
+        setActiveDistrict('workshop');
+      }}>
         <boxGeometry args={[0.5, 0.8, 0.5]} />
-        <meshStandardMaterial color="#00f0ff" flatShading roughness={0.4} emissive="#00f0ff" emissiveIntensity={0.15} />
+        <meshStandardMaterial color="#00f0ff" flatShading emissive="#00f0ff" emissiveIntensity={0.1} />
       </mesh>
 
-      {/* District Node 2: Greenhouse (Design & Art Space) */}
-      <mesh 
-        position={[1.8, -0.1, -1.2]} 
-        castShadow
-        onPointerOver={() => setCursor(true)}
-        onPointerOut={() => setCursor(false)}
-        onClick={(e) => {
-          e.stopPropagation();
-          useWorldStore.getState().setActiveDistrict('greenhouse');
-        }}
-      >
+      {/* Micro-Room Core 2: Design Greenhouse Node */}
+      <mesh position={[1.8, 0, -1.2]} onClick={(e) => {
+        if (tourTimeline !== 'TELESCOPE_CHOOSE') return;
+        e.stopPropagation();
+        setActiveDistrict('greenhouse');
+      }}>
         <sphereGeometry args={[0.4, 8, 8]} />
-        <MeshDistortMaterial color="#c084fc" speed={2} distort={0.35} radius={0.4} roughness={0.2} />
+        <MeshDistortMaterial color="#c084fc" speed={2} distort={0.3} radius={0.4} />
       </mesh>
 
-      {/* District Node 3: The Lab (Tech & Research) */}
-      <mesh 
-        position={[-2.0, 0, -1.8]} 
-        castShadow
-        onPointerOver={() => setCursor(true)}
-        onPointerOut={() => setCursor(false)}
-        onClick={(e) => {
-          e.stopPropagation();
-          useWorldStore.getState().setActiveDistrict('lab');
-        }}
-      >
+      {/* Micro-Room Core 3: Experimental Lab Node */}
+      <mesh position={[-2.0, 0.1, -1.8]} onClick={(e) => {
+        if (tourTimeline !== 'TELESCOPE_CHOOSE') return;
+        e.stopPropagation();
+        setActiveDistrict('lab');
+      }}>
         <cylinderGeometry args={[0.3, 0.3, 0.7, 6]} />
-        <meshStandardMaterial color="#312e81" flatShading roughness={0.3} />
+        <meshStandardMaterial color="#4c1d95" flatShading />
       </mesh>
 
-      {/* District Node 4: The Court (Gaming & Sports Core) */}
-      <mesh 
-        position={[2.0, 0, 1.8]} 
-        castShadow
-        onPointerOver={() => setCursor(true)}
-        onPointerOut={() => setCursor(false)}
-        onClick={(e) => {
-          e.stopPropagation();
-          useWorldStore.getState().setActiveDistrict('court');
-        }}
-      >
-        <boxGeometry args={[0.7, 0.2, 0.5]} />
-        <meshStandardMaterial color="#ea580c" roughness={0.5} />
-      </mesh>
-
-      {/* District Node 5: The Void (Web3 Gateway Underbelly) */}
-      <mesh 
-        position={[0, -0.4, 0]} 
-        onPointerOver={() => setCursor(true)}
-        onPointerOut={() => setCursor(false)}
-        onClick={(e) => {
-          e.stopPropagation();
-          useWorldStore.getState().setActiveDistrict('void');
-        }}
-      >
-        <torusGeometry args={[0.9, 0.08, 8, 24]} />
-        <meshStandardMaterial color="#ffffff" wireframe />
+      {/* Micro-Room Core 4: Physical Sprint Training Court Node */}
+      <mesh position={[2.0, 0.1, 1.8]} onClick={(e) => {
+        if (tourTimeline !== 'TELESCOPE_CHOOSE') return;
+        e.stopPropagation();
+        setActiveDistrict('court');
+      }}>
+        <boxGeometry args={[0.6, 0.2, 0.5]} />
+        <meshStandardMaterial color="#ea580c" flatShading />
       </mesh>
     </group>
   );
 }
 
-// 3. Master Canvas Component Export
+// 4. Integrated Canvas Exporter
 export default function WorldCanvas() {
-  const activeDistrict = useWorldStore((state) => state.activeDistrict);
-
-  // Clean cursor side-effects if component unmounts mid-hover
-  useEffect(() => {
-    return () => { document.body.style.cursor = 'auto'; };
-  }, []);
-
   return (
-    <div className="absolute inset-0 w-full h-full bg-[#05020a] z-0 select-none">
-      <Canvas
-        camera={{ position: [0, 4, 7], fov: 48 }}
-        gl={{ antialias: true, alpha: false }}
-        dpr={[1, 1.5]}
-        shadows
-      >
-        {/* Stark, dramatic late-night lighting shadows configuration */}
-        <color attach="background" args={['#05020a']} />
+    <div className="absolute inset-0 w-full h-full bg-[#030008] z-0 select-none">
+      <Canvas camera={{ position: [0, 4, 7], fov: 50 }} dpr={[1, 1.5]}>
+        <color attach="background" args={['#030008']} />
         
-        {/* Subtle dark purple ambient base light */}
-        <ambientLight intensity={0.2} color="#2e1065" />
-        
-        {/* Stark terminal white monitor glow casting high-contrast highlights */}
-        <directionalLight 
-          position={[5, 6, 4]} 
-          intensity={1.6} 
-          color="#ffffff" 
-          castShadow
-          shadow-mapSize={[1024, 1024]}
-        />
-        
-        {/* Dark cybernetic cyan bounce flash from below */}
-        <pointLight position={[-6, -3, -2]} intensity={0.9} color="#00f0ff" />
+        <ambientLight intensity={0.15} color="#1e1b4b" />
+        <directionalLight position={[5, 8, 5]} intensity={1.5} color="#ffffff" />
+        <pointLight position={[-4, -2, -4]} intensity={0.8} color="#00f0ff" />
 
         <FloatingIsland />
         <CameraRig />
-
-        <OrbitControls 
-          enabled={!activeDistrict} 
-          enableZoom={true} // Enabled zoom so laptop trackpads feel incredibly smooth
-          enablePan={false} 
-          minDistance={4}
-          maxDistance={12}
-          minPolarAngle={Math.PI / 4}   
-          maxPolarAngle={Math.PI / 2.1} 
-          makeDefault 
-        />
       </Canvas>
     </div>
   );
