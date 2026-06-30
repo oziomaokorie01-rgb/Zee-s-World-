@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { useWorldStore } from '../store/useWorldStore';
 
 // =========================================================================
-// 1. RE-ENGINEERED CAMERA RIG: Top-Down Satellite Zoom Tracking System
+// 1. CINEMATIC CAMERA RIG (DYNAMICALLY TRAILS THE BUTTERFLY ON ORBIT)
 // =========================================================================
 function CameraRig() {
   const { camera } = useThree();
@@ -21,7 +21,6 @@ function CameraRig() {
   const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
   const timer = useRef(0);
 
-  // Focus targets inside your cozy telescope bungalow room
   const bedroomObjects = [
     { id: 'laptop', pos: [-0.6, 0.6, 1.0], lookAt: [-0.6, 0.4, 0.3] },
     { id: 'books', pos: [0.7, 0.5, 1.1], lookAt: [0.7, 0.3, 0.2] },
@@ -30,7 +29,6 @@ function CameraRig() {
     { id: 'telescope', pos: [0.0, 0.8, -0.3], lookAt: [0.0, 0.9, -1.5] }
   ];
 
-  // Specific 3D District Node Framing Positions
   const districtTargets = {
     workshop: { pos: [-3.5, 1.2, 3.5], lookAt: [-3.5, 0.5, 0] },
     greenhouse: { pos: [3.5, 1.2, -3.5], lookAt: [3.5, 0.5, 0] },
@@ -42,25 +40,42 @@ function CameraRig() {
   useFrame((state, delta) => {
     const elapsed = state.clock.getElapsedTime();
 
-    // PHASE A: GLOBAL MAP ORBIT (Slow, sweeping planetary view)
+    // DYNAMIC TRACKING INTRO ORBIT
     if (tourTimeline === 'TV_INTRO' || tourTimeline === 'BUTTERFLY_WAKE') {
-      targetPosVec.current.set(Math.sin(elapsed * 0.1) * 14, 5, Math.cos(elapsed * 0.1) * 14);
-      targetLookVec.current.set(0, 0, 0);
+      // 1. Track the exact position angle of the butterfly's trajectory
+      const speedModifier = 0.5; 
+      const currentButterflyAngle = elapsed * speedModifier;
 
+      // 2. Position the camera to follow *behind* the butterfly's orbit path from a safe distance
+      const cameraFollowAngle = currentButterflyAngle - 0.6; 
+      const cameraRadius = 11.5; 
+      
+      targetPosVec.current.set(
+        Math.sin(cameraFollowAngle) * cameraRadius,
+        4.0 + Math.sin(elapsed * 0.5) * 1.0, // Soft atmospheric vertical breathing
+        Math.cos(cameraFollowAngle) * cameraRadius
+      );
+
+      // 3. Keep the camera lens directly centered on the moving butterfly path vectors
+      targetLookVec.current.set(
+        Math.sin(currentButterflyAngle) * 4.5,
+        1.8,
+        Math.cos(currentButterflyAngle) * 4.5
+      );
+
+      // TIMELINE ENFORCEMENT: Exactly 2 complete rotations around the map (4 * PI)
       if (tourTimeline === 'BUTTERFLY_WAKE') {
+        const totalRequiredTime = (Math.PI * 2 * 2) / speedModifier; // ~25 seconds for smooth cinematic tracking
         timer.current += delta;
-        if (timer.current > 6.0) { // After 6 seconds, trigger the dive descent
+        if (timer.current >= totalRequiredTime) {
           timer.current = 0;
           setTourTimeline('SATELLITE_ZOOM');
         }
       }
     }
 
-    // PHASE B: SATELLITE ZOOM INTRUSION (Camera plunges down alongside diving butterfly)
     else if (tourTimeline === 'SATELLITE_ZOOM') {
       timer.current += delta;
-      
-      // Top-down satellite view grid profile zooming from altitude 12.0 down into the bungalow roof
       const zoomProgress = Math.min(timer.current / 3.5, 1.0); 
       const currentHeight = THREE.MathUtils.lerp(12.0, 1.8, zoomProgress);
       const currentZOffset = THREE.MathUtils.lerp(0.1, 1.6, zoomProgress);
@@ -75,7 +90,6 @@ function CameraRig() {
       }
     }
 
-    // PHASE C: BUNGALOW INTERIOR TOUR INDOORS
     else if (tourTimeline === 'BEDROOM_PAN') {
       const currentItem = bedroomObjects.find(o => o.id === activeObject) || bedroomObjects[0];
       targetPosVec.current.set(currentItem.pos[0], currentItem.pos[1], currentItem.pos[2]);
@@ -94,7 +108,6 @@ function CameraRig() {
       }
     }
 
-    // PHASE D: SAT MAP CROSSROADS SELECTION OVERVIEW
     else if (tourTimeline === 'TELESCOPE_CHOOSE') {
       if (!activeDistrict) {
         targetPosVec.current.set(0, 9.0, 0.1);
@@ -105,7 +118,6 @@ function CameraRig() {
       }
     }
 
-    // PHASE E: AUTOMATIC NEON STREET SYSTEM CUTSCENE TRANSIT RUN
     else if (tourTimeline === 'STREET_TRANSIT') {
       timer.current += delta;
       if (timer.current < 2.0) {
@@ -120,20 +132,17 @@ function CameraRig() {
       }
     }
 
-    // PHASE F: ACTIVE SYSTEM DISTRICT ROOM EXPLORATION
     else if (tourTimeline === 'ROOM_EXPLORE' && activeDistrict) {
       const targetRoom = districtTargets[activeDistrict] || { pos: [0, 4, 7], lookAt: [0, 0, 0] };
       targetPosVec.current.set(...targetRoom.pos);
       targetLookVec.current.set(...targetRoom.lookAt);
     }
 
-    // PHASE G: THE FRACTURED VOID EDGE ISLAND OVERFALL VACUUM
     else if (tourTimeline === 'THE_VOID_FALL') {
       targetPosVec.current.set(Math.sin(elapsed * 5) * 3, camera.position.y - 0.15, Math.cos(elapsed * 5) * 3);
       targetLookVec.current.set(0, camera.position.y - 5, 0);
     }
 
-    // Interpolate camera transformations with dampening to smooth out jarring rendering jumps
     camera.position.lerp(targetPosVec.current, 0.04);
     currentLookAt.current.lerp(targetLookVec.current, 0.04);
     camera.lookAt(currentLookAt.current);
@@ -143,7 +152,7 @@ function CameraRig() {
 }
 
 // =========================================================================
-// 2. BIOLOGICAL BUTTERFLY ENGINE: Strict Safe Bounds Flight Path
+// 2. HIGH-FIDELITY ORGANIC BUTTERFLY STRUCTURE (USES REAL TEXTURE MASKS)
 // =========================================================================
 function RealButterflyGuide() {
   const butterflyGroup = useRef();
@@ -153,60 +162,57 @@ function RealButterflyGuide() {
   const tourTimeline = useWorldStore((state) => state.tourTimeline);
   const activeDistrict = useWorldStore((state) => state.activeDistrict);
 
+  // TEXTURE IMPLEMENTATION RULE:
+  // Place your extracted transparent png file of the butterfly inside your local public folder at:
+  // public/assets/textures/butterfly_wing.png
+  const textureLoader = new THREE.TextureLoader();
+  const wingTexture = textureLoader.load('/assets/textures/butterfly_wing.png');
+  wingTexture.colorSpace = THREE.SRGBColorSpace;
+
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (!butterflyGroup.current) return;
 
-    // Wing flap cadence parameters calibrated to match the natural rhythm of butterfly gif.jpg
     let flapSpeed = 14; 
-    let flapAmp = 0.75;
+    let flapAmp = 0.8;
 
     if (tourTimeline === 'SATELLITE_ZOOM') {
-      flapSpeed = 26; // Speeds up cleanly as it enters its nose dive downward
-      flapAmp = 0.95;
+      flapSpeed = 28; 
+      flapAmp = 1.0;
     } else if (tourTimeline === 'ROOM_EXPLORE') {
       flapSpeed = 5;  
       flapAmp = 0.3;
     }
 
+    // Biological rotation flapping math mimicking your file layout
     if (leftWingRef.current && rightWingRef.current) {
       const leftAngle = (Math.sin(t * flapSpeed) * flapAmp) - 0.15;
       leftWingRef.current.rotation.z = leftAngle;
       rightWingRef.current.rotation.z = -leftAngle;
     }
 
-    // --- CINEMATIC FLIGHT STATE ROUTING ---
+    // TRACKING PACING MATCH MATRIX
     if (tourTimeline === 'BUTTERFLY_WAKE') {
-      // Safe Orbit Boundary: Tightened radius keeps the asset safely inside camera viewport limits
-      const radius = 4.2; 
-      const orbitalSpeed = t * 0.6; // Slower angular velocity for smooth pacing
+      const radius = 4.5; 
+      const speedModifier = 0.5; // Must sync perfectly with CameraRig tracking parameters
+      const orbitalSpeed = t * speedModifier; 
       
       butterflyGroup.current.position.set(
         Math.sin(orbitalSpeed) * radius, 
-        1.8 + Math.sin(t * 1.2) * 0.2, 
+        1.8 + Math.sin(t * 1.2) * 0.15, 
         Math.cos(orbitalSpeed) * radius
       );
       
-      // Orient the spine mesh along its curved path forward vectors
       butterflyGroup.current.rotation.set(0, -orbitalSpeed + Math.PI, 0);
     } 
-    
     else if (tourTimeline === 'SATELLITE_ZOOM') {
-      // DIVE SEQUENCE: Butterfly targets the bungalow's skylight roof opening
       const currentY = butterflyGroup.current.position.y;
-      const targetY = 0.6; 
-      
-      // Smoothly track towards center ground coordinates
       butterflyGroup.current.position.x = THREE.MathUtils.lerp(butterflyGroup.current.position.x, 0, 0.03);
       butterflyGroup.current.position.z = THREE.MathUtils.lerp(butterflyGroup.current.position.z, 0, 0.03);
-      butterflyGroup.current.position.y = THREE.MathUtils.lerp(currentY, targetY, 0.025);
-      
-      // Pitch straight down toward the earth ground map layout
+      butterflyGroup.current.position.y = THREE.MathUtils.lerp(currentY, 0.6, 0.025);
       butterflyGroup.current.rotation.set(Math.PI / 2.5, 0, 0);
     }
-    
     else if (tourTimeline === 'BEDROOM_PAN') {
-      // Guide anchor hovers gently right in front of lens during interior detail reveals
       butterflyGroup.current.position.set(
         state.camera.position.x + 0.2, 
         state.camera.position.y - 0.1, 
@@ -225,23 +231,39 @@ function RealButterflyGuide() {
   });
 
   return (
-    <group ref={butterflyGroup}>
-      {/* Central Spine */}
-      <mesh><cylinderGeometry args={[0.006, 0.004, 0.14, 6]} /><meshStandardMaterial color="#090205" /></mesh>
+    <group ref={butterflyGroup} scale={[1.3, 1.3, 1.3]}>
+      {/* Central Segment torso */}
+      <mesh><cylinderGeometry args={[0.005, 0.003, 0.15, 6]} /><meshStandardMaterial color="#060103" /></mesh>
       
-      {/* Left Wing Plane */}
-      <group ref={leftWingRef} position={[-0.01, 0, 0]}>
-        <mesh position={[-0.12, 0, 0.01]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[0.24, 0.22]} />
-          <meshStandardMaterial color="#ff003c" emissive="#ff003c" emissiveIntensity={2.5} transparent side={THREE.DoubleSide} opacity={0.95} />
+      {/* LEFT ORGANIC WING BLADE MAP */}
+      <group ref={leftWingRef} position={[-0.005, 0, 0]}>
+        <mesh position={[-0.13, 0, 0.01]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[0.26, 0.24]} />
+          <meshStandardMaterial 
+            map={wingTexture}
+            transparent={true} 
+            alphaTest={0.15}
+            side={THREE.DoubleSide}
+            emissive="#ff003c" 
+            emissiveIntensity={2.2} 
+            opacity={0.98} 
+          />
         </mesh>
       </group>
       
-      {/* Right Wing Plane */}
-      <group ref={rightWingRef} position={[0.01, 0, 0]}>
-        <mesh position={[0.12, 0, 0.01]} rotation={[-Math.PI / 2, 0, Math.PI]}>
-          <planeGeometry args={[0.24, 0.22]} />
-          <meshStandardMaterial color="#ff003c" emissive="#ff003c" emissiveIntensity={2.5} transparent side={THREE.DoubleSide} opacity={0.95} />
+      {/* RIGHT ORGANIC WING BLADE MAP */}
+      <group ref={rightWingRef} position={[0.005, 0, 0]}>
+        <mesh position={[0.13, 0, 0.01]} rotation={[-Math.PI / 2, 0, Math.PI]}>
+          <planeGeometry args={[0.26, 0.24]} />
+          <meshStandardMaterial 
+            map={wingTexture}
+            transparent={true} 
+            alphaTest={0.15}
+            side={THREE.DoubleSide}
+            emissive="#ff003c" 
+            emissiveIntensity={2.2} 
+            opacity={0.98} 
+          />
         </mesh>
       </group>
     </group>
@@ -249,7 +271,7 @@ function RealButterflyGuide() {
 }
 
 // =========================================================================
-// 3. THE ZEE CHARACTER SPRITE GENERATOR: Loads district apparel sheets
+// 3. THE ZEE CHARACTER SPRITE GENERATOR
 // =========================================================================
 function ZeeDistrictBillboard({ outfitType }) {
   const textureLoader = new THREE.TextureLoader();
@@ -292,7 +314,7 @@ function WorldGridMap() {
     if (!worldRef.current) return;
 
     if (tourTimeline === 'TV_INTRO' || tourTimeline === 'BUTTERFLY_WAKE') {
-      worldRef.current.rotation.y = t * 0.05; 
+      worldRef.current.rotation.y = t * 0.02; 
       worldRef.current.position.y = 0;
     } else if (tourTimeline === 'THE_VOID_FALL') {
       worldRef.current.position.y += 0.06; 
@@ -305,22 +327,18 @@ function WorldGridMap() {
     <group ref={worldRef}>
       <RealButterflyGuide />
 
-      {/* EXPANDED TERRAIN BACKGROUND LAYER */}
       {(tourTimeline === 'TV_INTRO' || tourTimeline === 'BUTTERFLY_WAKE') ? (
         <mesh position={[0, 0, 0]}>
           <sphereGeometry args={[4.5, 24, 24]} />
           <meshStandardMaterial color="#04020d" wireframe stroke="#4c1d95" emissive="#1e1b4b" emissiveIntensity={0.5} />
         </mesh>
       ) : (
-        /* COZY OBSERVATORY BUNGALOW ARCHITECTURAL SHELL STRUCTURE */
         <group position={[0, 0, 0]}>
-          {/* Bungalow Interior Base Floor Mat */}
           <mesh position={[0, -0.05, 0]} receiveShadow>
             <cylinderGeometry args={[1.5, 1.5, 0.1, 8]} />
             <meshStandardMaterial color="#0b0821" roughness={0.7} />
           </mesh>
 
-          {/* 8 Structural Bungalow Support Pillars */}
           {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
             const angle = (i / 8) * Math.PI * 2;
             return (
@@ -331,7 +349,6 @@ function WorldGridMap() {
             );
           })}
 
-          {/* Glowing Mechanical Skylight Roof Aperture ring */}
           <mesh position={[0, 1.2, 0]}>
             <torusGeometry args={[1.4, 0.03, 8, 24]} />
             <meshStandardMaterial color="#1d113b" emissive="#00f0ff" emissiveIntensity={0.3} />
@@ -339,34 +356,28 @@ function WorldGridMap() {
         </group>
       )}
 
-      {/* ENVIRONMENT DISTRICT ROOM ARRAYS */}
       {tourTimeline !== 'TV_INTRO' && tourTimeline !== 'BUTTERFLY_WAKE' && (
         <>
-          {/* DISTRICT 1: THE INVENTOR WORKSHOP NODE */}
           <group position={[-3.5, 0, 0]} onClick={(e) => { if (tourTimeline === 'TELESCOPE_CHOOSE') { e.stopPropagation(); setActiveDistrict('workshop'); }}}>
             <mesh castShadow><boxGeometry args={[1, 0.8, 1]} /><meshStandardMaterial color="#1f2937" roughness={0.9} /></mesh>
             {activeDistrict === 'workshop' && <ZeeDistrictBillboard outfitType="workshop" />}
           </group>
 
-          {/* DISTRICT 2: THE IDEA GREENHOUSE NODE */}
           <group position={[3.5, 0, 0]} onClick={(e) => { if (tourTimeline === 'TELESCOPE_CHOOSE') { e.stopPropagation(); setActiveDistrict('greenhouse'); }}}>
             <mesh><sphereGeometry args={[0.6, 12, 12]} /><MeshDistortMaterial color="#166534" speed={1.5} distort={0.2} radius={0.6} /></mesh>
             {activeDistrict === 'greenhouse' && <ZeeDistrictBillboard outfitType="greenhouse" />}
           </group>
 
-          {/* DISTRICT 3: THE NEIGHBORHOOD BASKETBALL QUARTER */}
           <group position={[0, 0, 4.5]} onClick={(e) => { if (tourTimeline === 'TELESCOPE_CHOOSE') { e.stopPropagation(); setActiveDistrict('court'); }}}>
             <mesh><boxGeometry args={[1.6, 0.1, 1.2]} /><meshStandardMaterial color="#ea580c" roughness={0.5} /></mesh>
             {activeDistrict === 'court' && <ZeeDistrictBillboard outfitType="court" />}
           </group>
 
-          {/* DISTRICT 4: THE RESEARCH FACILITY */}
           <group position={[0, 0, -4.5]} onClick={(e) => { if (tourTimeline === 'TELESCOPE_CHOOSE') { e.stopPropagation(); setActiveDistrict('research'); }}}>
             <mesh><cylinderGeometry args={[0.7, 0.7, 0.9, 8]} /><meshStandardMaterial color="#1e3a8a" flatShading /></mesh>
             {activeDistrict === 'research' && <ZeeDistrictBillboard outfitType="research" />}
           </group>
 
-          {/* DISTRICT 5: THE UNDERBELLY NETWORK VOID */}
           <group position={[0, -0.4, -9.0]} onClick={(e) => { if (tourTimeline === 'TELESCOPE_CHOOSE') { e.stopPropagation(); setActiveDistrict('void'); }}}>
             <mesh><torusGeometry args={[0.8, 0.15, 8, 24]} /><meshStandardMaterial color="#000000" wireframe /></mesh>
             {activeDistrict === 'void' && <ZeeDistrictBillboard outfitType="void" />}
