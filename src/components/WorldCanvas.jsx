@@ -1,10 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { useWorldStore } from '../store/useWorldStore';
 
-// 1. MIDDLE-GROUND CAMERA RIG
+// 1. MIDDLE-GROUND CAMERA RIG: Perfect responsive viewport spacing
 function CameraRig() {
   const { camera } = useThree();
   const tourTimeline = useWorldStore((state) => state.tourTimeline);
@@ -40,40 +40,24 @@ function CameraRig() {
   return null;
 }
 
-// 2. 3D MODEL BUTTERFLY INTEGRATION
+// 2. STABLE 3D GLB BUTTERFLY CONTROLLER (Safe from missing animation crashes)
 function Real3DButterfly() {
   const modelRef = useRef();
   const tourTimeline = useWorldStore((state) => state.tourTimeline);
 
-  // Load the 3D asset file from your public folder
-  // Replace this path string if you name your file differently
-  const { scene, animations } = useGLTF('/assets/models/butterfly.glb');
-  const mixer = useRef();
+  // Load the butterfly file from your public directory
+  const { scene } = useGLTF('/assets/models/butterfly.glb');
 
-  // Handle embedded model wing animations if the file has them built-in
-  useEffect(() => {
-    if (animations && animations.length > 0) {
-      mixer.current = new THREE.AnimationMixer(scene);
-      const action = mixer.current.clipAction(animations[0]); // Triggers wing-flap clip
-      action.play();
-    }
-  }, [scene, animations]);
-
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (!modelRef.current) return;
 
-    // Advance embedded model skeleton animations if available
-    if (mixer.current) {
-      // Scale flapping animation speed based on state
-      const speedMultiplier = (tourTimeline === 'BUTTERFLY_WAKE' || tourTimeline === 'TV_INTRO') ? 1.8 : 0.6;
-      mixer.current.update(delta * speedMultiplier);
-    } else {
-      // Procedural fallback flap: Rocks the entire model structure if it has no built-in bones
-      modelRef.current.rotation.z = Math.sin(t * 26) * 0.2;
-    }
+    // Organic wing flap: Since the model doesn't have bones, 
+    // we scale the model's width using a rapid cosine loop to create a beautiful wing-beat illusion!
+    const baseFlap = Math.cos(t * 28);
+    modelRef.current.scale.x = (0.7 + baseFlap * 0.3) * 6.0; // Scaled up by 6.0 so it isn't microscopic!
 
-    // Flight paths: Maintain perfect orbital path bounds around your central wireframe
+    // Flight paths around your wireframe island sphere boundary
     if (tourTimeline === 'BUTTERFLY_WAKE' || tourTimeline === 'TV_INTRO') {
       const radius = 3.8; 
       modelRef.current.position.set(
@@ -81,28 +65,28 @@ function Real3DButterfly() {
         Math.sin(t * 2.5) * 0.4 + 0.2, 
         Math.cos(t * 1.8) * radius
       );
+      // Face towards direction of flight path
       modelRef.current.rotation.y = -(t * 1.8) + Math.PI;
     } else {
-      // Idle room focus hover parameters
+      // Idle room hovering properties
       modelRef.current.position.set(0, Math.sin(t * 2) * 0.1 + 1.0, 0);
       modelRef.current.rotation.y = t * 0.3;
     }
   });
 
-  // Render the real 3D asset mesh via primitive object injector
   return (
     <primitive 
       ref={modelRef} 
       object={scene} 
-      scale={0.4} // Adjust this scale factor up or down depending on your file size
+      scale={[6.0, 6.0, 6.0]} // Enlarge the tiny mesh structure to be visible
     />
   );
 }
 
-// Preload asset pipeline to avoid frame stuttering on runtime initialization
+// Preload to ensure smooth site initialization transitions
 useGLTF.preload('/assets/models/butterfly.glb');
 
-// 3. CORE WIREFRAME CELESTIAL ENVIRONMENT
+// 3. CORE MAP GRID PIPELINE
 function CoreWorldMap() {
   const worldRef = useRef();
   const tourTimeline = useWorldStore((state) => state.tourTimeline);
@@ -127,14 +111,14 @@ function CoreWorldMap() {
   );
 }
 
-// 4. MAIN EXPORT CANVAS LAYER
+// 4. MAIN EXPORTER CANVAS
 export default function WorldCanvas() {
   return (
     <div className="absolute inset-0 w-full h-full bg-[#030008] z-0 select-none">
       <Canvas camera={{ position: [0, 4, 11], fov: 45 }} dpr={[1, 1.5]}>
         <color attach="background" args={['#030008']} />
         
-        <ambientLight intensity={0.5} color="#2b1a4a" />
+        <ambientLight intensity={0.7} color="#3c2673" />
         <directionalLight position={[5, 10, 5]} intensity={1.5} />
 
         <CoreWorldMap />
