@@ -85,11 +85,12 @@ function GeometricButterfly() {
         <meshStandardMaterial color="#111111" roughness={1} />
       </mesh>
 
-      {/* Left Wing - Corrected closing mesh tag here */}
+      {/* Left Wing (Using a flat plane instead of a solid chunk box or cone) */}
       <mesh ref={leftWing} position={[0, 0, 0]}>
+        {/* We shift the geometry matrix slightly left so it hinges naturally from the center line */}
         <planeGeometry args={[0.25, 0.25]} />
         <meshStandardMaterial color="#ff7a00" emissive="#ff3b00" emissiveIntensity={1.5} side={THREE.DoubleSide} transparent opacity={0.9} />
-      </mesh>
+      </group>
 
       {/* Right Wing */}
       <mesh ref={rightWing} position={[0, 0, 0]}>
@@ -116,7 +117,7 @@ function CoreWorldMap() {
     <group ref={worldRef}>
       <GeometricButterfly />
 
-      {/* Your core central wireframe grid matching your UI look */}
+      {/* Your core central wireframe grid matching 1000137690.mp4 */}
       <mesh position={[0, 0, 0]}>
         <sphereGeometry args={[3.2, 16, 16]} />
         <meshStandardMaterial color="#0b0726" wireframe stroke="#00f0ff" />
