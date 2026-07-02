@@ -120,26 +120,17 @@
 }
 
 /* Simulates a sweeping circular flight pattern matching the wireframe boundary limits */
+/* Orbit Path: Moves the container in a circle */
 @keyframes orbit-flight {
-  0% {
-    transform: rotate(0deg) translateX(160px) rotate(0deg) translateY(0px);
-  }
-  50% {
-    transform: rotate(180deg) translateX(175px) rotate(-180deg) translateY(-20px);
-  }
-  100% {
-    transform: rotate(360deg) translateX(160px) rotate(-360deg) translateY(0px);
-  }
+  0% { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
 }
 
-.animate-flap-left {
-  animation: flap-left 0.12s infinite ease-in-out;
+/* Flap: A simple scale pulse that looks like wings closing */
+@keyframes flap {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.2); }
 }
 
-.animate-flap-right {
-  animation: flap-right 0.12s infinite ease-in-out;
-}
-
-.animate-orbit-flight {
-  animation: orbit-flight 9s infinite linear;
-}
+.animate-orbit-flight { animation: orbit-flight 10s infinite linear; }
+.animate-flap { animation: flap 0.2s infinite ease-in-out; }
