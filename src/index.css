@@ -48,11 +48,24 @@
   background: inherit;
   animation: monarchWingFlap 0.24s infinite ease-in-out;
 }
-
-/* Pure Hardware-Accelerated 3D Wing Fold Animation */
-@keyframes monarchWingFlap {
+/* Simple rotation for a flapping effect */
+@keyframes flap {
   0%, 100% { transform: scaleX(1); }
-  50% { transform: scaleX(0.15) skewY(4deg); }
+  50% { transform: scaleX(0.5); }
+}
+
+.animate-flap {
+  animation: flap 0.3s infinite ease-in-out;
+}
+
+/* Keeps the orbital movement */
+@keyframes orbit-flight {
+  0% { transform: rotate(0deg) translateX(160px); }
+  100% { transform: rotate(360deg) translateX(160px); }
+}
+
+.animate-orbit-flight {
+  animation: orbit-flight 9s infinite linear;
 }
 
 /* Pixie Dust Particle Trails */
