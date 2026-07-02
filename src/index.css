@@ -95,3 +95,38 @@
   100% { transform: translate(110vw, 40vh) rotate(5deg); }
 }
               
+/* Razor-sharp, hardware-accelerated high frequency wing beats */
+@keyframes flap-left {
+  0%, 100% { transform: rotateY(15deg); }
+  50% { transform: rotateY(70deg); }
+}
+
+@keyframes flap-right {
+  0%, 100% { transform: rotateY(-15deg); }
+  50% { transform: rotateY(-70deg); }
+}
+
+/* Simulates a sweeping circular flight pattern matching the wireframe boundary limits */
+@keyframes orbit-flight {
+  0% {
+    transform: rotate(0deg) translateX(160px) rotate(0deg) translateY(0px);
+  }
+  50% {
+    transform: rotate(180deg) translateX(175px) rotate(-180deg) translateY(-20px);
+  }
+  100% {
+    transform: rotate(360deg) translateX(160px) rotate(-360deg) translateY(0px);
+  }
+}
+
+.animate-flap-left {
+  animation: flap-left 0.12s infinite ease-in-out;
+}
+
+.animate-flap-right {
+  animation: flap-right 0.12s infinite ease-in-out;
+}
+
+.animate-orbit-flight {
+  animation: orbit-flight 9s infinite linear;
+}
