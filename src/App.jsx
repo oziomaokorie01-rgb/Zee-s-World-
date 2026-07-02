@@ -4,6 +4,7 @@ import { useIntroStore } from './store/useIntroStore';
 import CinematicIntro from './components/CinematicIntro';
 import NarrativeHUD from './components/NarrativeHUD';
 import WorldCanvas from './components/WorldCanvas';
+import CSS3DButterfly from './components/CSS3DButterfly';
 import UIOverlay from './components/UIOverlay';
 import ProjectDrawer from './components/ProjectDrawer';
 import TourGuideOverlay from './components/TourGuideOverlay';
@@ -23,6 +24,7 @@ export default function App() {
       <>
       <NarrativeHUD />
         <WorldCanvas />
+        <CSS3DButterfly />
       </>
       ) : (
         <div className="absolute inset-0 bg-radial-gradient from-[#0f0720] to-[#05020a] z-0" />
