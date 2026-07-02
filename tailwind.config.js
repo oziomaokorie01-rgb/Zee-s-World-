@@ -7,25 +7,25 @@ export default {
   theme: {
     extend: {
       animation: {
-        'orbit-flight': 'orbitFlight 6s infinite ease-in-out',
-        'flap-left': 'flapLeft 0.4s infinite ease-in-out',
-        'flap-right': 'flapRight 0.4s infinite ease-in-out',
+        'orbit-flight': 'orbitFlight 8s infinite ease-in-out',
+        'flap-left': 'flapLeft 0.5s infinite ease-in-out',
+        'flap-right': 'flapRight 0.5s infinite ease-in-out',
       },
       keyframes: {
         orbitFlight: {
-          '0%': { transform: 'translate(0, 0)' },
-          '25%': { transform: 'translate(100px, -50px)' },
-          '50%': { transform: 'translate(0, -100px)' },
-          '75%': { transform: 'translate(-100px, -50px)' },
-          '100%': { transform: 'translate(0, 0)' },
+          '0%': { transform: 'translate(0, 0) scale(1)' },
+          '25%': { transform: 'translate(120px, -80px) scale(1.1)' },
+          '50%': { transform: 'translate(0, -150px) scale(1)' },
+          '75%': { transform: 'translate(-120px, -80px) scale(1.1)' },
+          '100%': { transform: 'translate(0, 0) scale(1)' },
         },
         flapLeft: {
           '0%, 100%': { transform: 'rotateY(0deg)' },
-          '50%': { transform: 'rotateY(-45deg)' },
+          '50%': { transform: 'rotateY(-50deg)' },
         },
         flapRight: {
           '0%, 100%': { transform: 'rotateY(0deg)' },
-          '50%': { transform: 'rotateY(45deg)' },
+          '50%': { transform: 'rotateY(50deg)' },
         },
       },
     },
