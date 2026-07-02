@@ -23,19 +23,69 @@ export default function CSS3DButterfly() {
       {/* Orbit & Hover Controller */}
       <div className="relative animate-orbit-flight" style={{ transformStyle: 'preserve-3d' }}>
         
-        {/* 3D Space Rotator */}
+        {/* 3D Space Rotator - rotate to correct orientation and animate wings up/down */}
         <div 
-          className="relative w-12 h-12 animate-flap-left"
+          className="relative w-12 h-12"
           style={{
             transformStyle: 'preserve-3d',
-            transform: 'rotateX(55deg) rotateY(0deg) rotateZ(90deg)',
-            backgroundImage: `url('data:image/svg+xml;utf8,${encodeURIComponent(butterflyShape)}')`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            filter: 'drop-shadow(0 0 8px rgba(0, 240, 255, 0.6))'
+            transform: 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)',
+            animation: 'wingFlap 0.6s infinite ease-in-out'
           }}
-        />
+        >
+          {/* Left Wing */}
+          <div
+            className="absolute right-1/2 top-1/2 -translate-y-1/2 w-6 h-8"
+            style={{
+              transformStyle: 'preserve-3d',
+              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><ellipse cx="15" cy="20" rx="8" ry="12" fill="%23a855f7" opacity="0.8"/></svg>')`,
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              transformOrigin: 'right center',
+              animation: 'wingFlapLeft 0.6s infinite ease-in-out'
+            }}
+          />
+
+          {/* Right Wing */}
+          <div
+            className="absolute left-1/2 top-1/2 -translate-y-1/2 w-6 h-8"
+            style={{
+              transformStyle: 'preserve-3d',
+              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><ellipse cx="15" cy="20" rx="8" ry="12" fill="%23a855f7" opacity="0.8"/></svg>')`,
+              backgroundSize: 'contain',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              transformOrigin: 'left center',
+              animation: 'wingFlapRight 0.6s infinite ease-in-out'
+            }}
+          />
+
+          {/* Body & Head */}
+          <div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-6"
+            style={{
+              backgroundColor: '#00f0ff',
+              borderRadius: '50%',
+              boxShadow: '0 0 10px rgba(0, 240, 255, 0.8)',
+              transformStyle: 'preserve-3d'
+            }}
+          />
+        </div>
+
+        <style>{`
+          @keyframes wingFlapLeft {
+            0%, 100% { transform: rotateX(0deg); }
+            50% { transform: rotateX(45deg); }
+          }
+          @keyframes wingFlapRight {
+            0%, 100% { transform: rotateX(0deg); }
+            50% { transform: rotateX(-45deg); }
+          }
+          @keyframes wingFlap {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.8); }
+          }
+        `}</style>
       </div>
     </div>
   );
