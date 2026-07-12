@@ -1,15 +1,20 @@
 import React from 'react';
+import { useIntroStore } from '../store/useIntroStore';
 
 export default function SimpleButterfly() {
+  const introComplete = useIntroStore((state) => state.introComplete);
+
+  // Do not render the butterfly at all until the intro is finished
+  if (!introComplete) return null;
+
   return (
     <div className="absolute inset-0 z-[100] pointer-events-none flex items-center justify-center">
-      {/* 1. Orbit Container: Moves the whole thing in a circle */}
-      <div className="animate-orbit-flight relative">
-        
-        {/* 2. Flap Container: Handles the flapping animation */}
+      {/* Container for the circular flight path */}
+      <div className="animate-orbit-flight">
+        {/* The 2D Image - No 3D models involved */}
         <img 
-          src="/assets/butterfly-wings.jpg" 
-          alt="Butterfly" 
+          src="/butterfly.png" 
+          alt="" 
           className="w-24 h-24 animate-flap"
           style={{ objectFit: 'contain' }}
         />
