@@ -132,5 +132,7 @@
   50% { transform: scaleX(0.2); }
 }
 
-.animate-orbit-flight { animation: orbit-flight 10s infinite linear; }
-.animate-flap { animation: flap 0.2s infinite ease-in-out; }
+.animate-orbit-flight { animation: orbit-flight 10s infinite linear; 
+                      position: absolute;
+                      }
+.animate-flap { animation: flap 0.3s infinite ease-in-out; }
