@@ -1,5 +1,6 @@
 import React from 'react';
 import { useIntroStore } from '../store/useIntroStore';
+import butterflyImg from '../assets/butterfly.png';
 
 export default function SimpleButterfly() {
   const introComplete = useIntroStore((state) => state.introComplete);
