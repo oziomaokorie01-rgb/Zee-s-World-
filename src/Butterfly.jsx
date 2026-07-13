@@ -1,6 +1,5 @@
 // src/Butterfly.jsx
 import React from 'react';
-import { useGLTF } from '@react-three/drei';
 
 export function ButterflyModel() {
   // This automatically fetches from your /public/butterfly.glb path
