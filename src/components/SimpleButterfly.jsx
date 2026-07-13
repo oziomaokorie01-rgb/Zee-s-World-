@@ -14,7 +14,7 @@ export default function SimpleButterfly() {
       <div className="animate-orbit-flight">
         {/* The 2D Image - No 3D models involved */}
         <img 
-          src="/butterflyImg" 
+          src={butterflyImg} 
           alt="Butterfly" 
           className="w-24 h-24 animate-flap"
           style={{ objectFit: 'contain' }}
